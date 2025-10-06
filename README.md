@@ -419,7 +419,66 @@ print("Guardado: parteB_jitter.csv")
 | 4 | Voz_Mateus  |  48000  |           108.35 |    136 |        0.002508 |         24.62 |
 | 5 | Voz_Raul    |  48000  |           103.67 |    130 |        0.008541 |         52.77 |
 
+### CALCULO DE SHIMMER
+```python
+import numpy as np, pandas as pd
+from scipy.signal import find_peaks
 
+EPS = 1e-12  # evita dividir por cero
+
+# F0 por autocorrelación para definir distancia mínima entre picos
+def f0_autocorr(y, sr, fmin=50, fmax=500):
+    y = y - np.mean(y)
+    ac = np.correlate(y, y, mode='full')[len(y)-1:]
+    ac = ac / (ac[0] + EPS)
+    kmin, kmax = int(sr/fmax), int(sr/fmin)
+    if kmax <= kmin or kmax >= len(ac):
+        return np.nan
+    k = kmin + np.argmax(ac[kmin:kmax+1])
+    return sr/k if ac[k] > 0.2 else np.nan
+
+rows = []
+for name, data in filtered_signals.items():         # recorre cada voz filtrada
+    y, sr = data["y"], data["sr"]                   # señal y frecuencia de muestreo
+
+    f0 = f0_autocorr(y, sr)                         # guía para la distancia entre picos
+    f0_safe = 200.0 if np.isnan(f0) else f0
+    min_dist = int(0.6 * sr / f0_safe)              # separación mínima entre picos (muestras)
+    height = 0.1*np.max(np.abs(y)) + EPS            # umbral de altura para evitar ruido
+
+    peaks, _ = find_peaks(y, distance=max(1,min_dist), height=height)  # picos “válidos”
+    Ai = y[peaks].astype(float)                      # amplitudes en los picos
+
+    if len(Ai) >= 2:
+        shimmer_abs = float(np.mean(np.abs(np.diff(Ai))))              # |Ai - Ai+1| promedio
+        shimmer_pct = 100.0 * shimmer_abs / (np.mean(np.abs(Ai)) + EPS) # relativo a media |Ai|
+    else:
+        shimmer_abs, shimmer_pct = np.nan, np.nan
+
+    rows.append({
+        "archivo": name,
+        "Fs_Hz": sr,
+        "ciclos_detectados": len(peaks),
+        "Shimmer_abs": None if np.isnan(shimmer_abs) else round(shimmer_abs, 6),
+        "Shimmer_rel_%": None if np.isnan(shimmer_pct) else round(shimmer_pct, 2),
+    })
+
+df_shimmer = pd.DataFrame(rows)
+from IPython.display import display
+display(df_shimmer)
+df_shimmer.to_csv("parteB_shimmer.csv", index=False)
+print("Guardado: parteB_shimmer.csv")
+```
+### RESULTADOS
+
+| # | Archivo     | Fs (Hz) | Ciclos detectados | Shimmer abs | Shimmer rel (%) |
+|---|------------|---------|--------------------|-------------|-----------------|
+| 0 | Voz_Ali    | 48000   | 267                | 0.069477    | 24.56           |
+| 1 | Voz_Karen  | 48000   | 423                | 0.048041    | 15.88           |
+| 2 | Voz_Kevin  | 48000   | 152                | 0.059824    | 19.66           |
+| 3 | Voz_Mafe   | 48000   | 319                | 0.038733    | 14.93           |
+| 4 | Voz_Mateus | 48000   | 136                | 0.047803    | 19.97           |
+| 5 | Voz_Raul   | 48000   | 130                | 0.041034    | 22.78           |
 
 
 
