@@ -9,7 +9,7 @@ Capturar y procesar señales de voz masculinas y femeninas para analizar su comp
 ## LIBRERIAS
 Las librerias que implementamos fueron las siguientes:
 
-+**Importación de liberías**
++ **Importación de liberías**
 ```python
 ! pip install wfdb
 import wfdb
