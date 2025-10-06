@@ -30,12 +30,12 @@ from google.colab import files
 uploaded = files.upload()
 ```
 ### Se guardaron los archivos de voz en formato .wav
-Saving Voz_Ali.wav to Voz_Ali.wav
-Saving Voz_Karen.wav to Voz_Karen.wav
-Saving Voz_Kevin.wav to Voz_Kevin.wav
-Saving Voz_Mafe.wav to Voz_Mafe.wav
-Saving Voz_Mateus.wav to Voz_Mateus.wav
-Saving Voz_Raul.wav to Voz_Raul.wav
++ Saving Voz_Ali.wav to Voz_Ali.wav
++ Saving Voz_Karen.wav to Voz_Karen.wav
++ Saving Voz_Kevin.wav to Voz_Kevin.wav
++ Saving Voz_Mafe.wav to Voz_Mafe.wav
++ Saving Voz_Mateus.wav to Voz_Mateus.wav
++ Saving Voz_Raul.wav to Voz_Raul.wav
 
 ### Se convertirtieron archivos de audio .wav en registros WFDB y se muestra la frecuencia de muestreo original del audio
 ```python
