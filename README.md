@@ -21,6 +21,8 @@ from scipy.signal import butter, filtfilt
 import pandas as pd
 import find_peaks
 ```
+### La frase que elegimos fue: "No nos queremos cambiar de grupo"
+
 ### Se importaron los archivos de voz desde Google Drive a Google Colab
 ```python
 from google.colab import drive
@@ -115,6 +117,81 @@ for rec_name, sr in record_names:
 
 + **Voz Raúl**
 <img width="892" height="260" alt="image" src="https://github.com/user-attachments/assets/684f52c4-34aa-4fae-b214-c2da102b8869" />
+
+### Graficamos el espectro de magnitudes frecuenciales de cada voz
+```python
+# Recorremos los registros WFDB que ya creados
+for rec_name, _ in record_names:
+    # 1) Leer la señal desde WFDB
+    rec = wfdb.rdrecord(rec_name)               }
+    if rec.p_signal is not None:
+        y = rec.p_signal[:, 0].astype(np.float32)
+        sr = rec.fs
+    else:
+        rec = wfdb.rdrecord(rec_name, physical=False)  # fuerza d_signal
+        y_d = rec.d_signal[:, 0].astype(np.float32)
+        gain = float(rec.adc_gain[0]) if rec.adc_gain is not None else 32767.0
+        baseline = float(rec.baseline[0]) if rec.baseline is not None else 0.0
+        y = (y_d - baseline) / gain
+        sr = rec.fs
+
+    # 2) Preparar para la FFT
+    y = y - np.mean(y)
+    N = len(y)
+    y_win = y * np.hanning(N)
+
+    # 3) FFT de una sola cara y eje de frecuencias
+    n_fft = 1 << int(np.ceil(np.log2(N)))
+    n_fft = min(max(2048, n_fft), 65536)
+    Y = np.fft.rfft(y_win, n=n_fft)
+    f = np.fft.rfftfreq(n_fft, d=1/sr)
+    mag_db = 20*np.log10(np.abs(Y) + 1e-12)
+
+    # 4) marcar el pico principal en 50–5000 Hz
+    band = (f >= 50) & (f <= 5000)
+    f_peak = None
+    if np.any(band):
+        i = np.argmax(mag_db[band])
+        f_peak = f[band][i]
+        pk = mag_db[band][i]
+
+    # 5) Gráfico del espectro
+    plt.figure(figsize=(10,3))
+    plt.plot(f, mag_db)
+    if f_peak is not None:
+        plt.axvline(f_peak, linestyle='--', alpha=0.6)
+        plt.text(f_peak, pk, f'{f_peak:.1f} Hz', ha='left', va='bottom')
+    plt.xlim(0, sr/2)
+    plt.xlabel("Frecuencia [Hz]")
+    plt.ylabel("Magnitud [dB]")
+    plt.title(f"{rec_name} — Espectro")
+    plt.tight_layout()
+    plt.show()
+```
++ **Voz Alissia**
+<img width="887" height="260" alt="image" src="https://github.com/user-attachments/assets/4f41af13-404c-4014-8e1c-0e87ffe26a0d" />
+
++ **Voz Karen**
+<img width="888" height="263" alt="image" src="https://github.com/user-attachments/assets/ec44298a-a260-46ad-b919-3b30c75a3b7a" />
+
++ **Voz Mafe**
+<img width="890" height="261" alt="image" src="https://github.com/user-attachments/assets/ad446123-5c78-4601-bdd7-d4a75c623fa3" />
+
++ **Voz Kevin**
+<img width="887" height="265" alt="image" src="https://github.com/user-attachments/assets/000fc88f-1567-45f5-8d3c-6cc5d7440b0b" />
+
++ **Voz Mateus**
+<img width="888" height="263" alt="image" src="https://github.com/user-attachments/assets/4b9dd698-2e44-42bd-a610-8ab98c51eb26" />
+
++ **Voz Raúl**
+<img width="892" height="258" alt="image" src="https://github.com/user-attachments/assets/594cdb35-8d6b-4419-a18e-fb9493996c99" />
+
+
+
+
+
+
+
 
 
 
