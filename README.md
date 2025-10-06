@@ -1,5 +1,5 @@
 # LABORATORIO 3 
-## FRECUENCIA-Y-VOZ
+## FRECUENCIA Y VOZ
 ### Objetivo
 Capturar y procesar señales de voz masculinas y femeninas para analizar su comportamiento espectral mediante la Transformada de Fourier, extrayendo parámetros característicos como frecuencia fundamental, frecuencia media, brillo, intensidad, jitter y shimmer, con el fin de comparar y concluir las diferencias principales entre ambos géneros.
 
@@ -71,12 +71,12 @@ for file in uploaded.keys():
     rec_name, sr = wav_to_wfdb(file)
     record_names.append((rec_name, sr))
 ```
-Guardado Voz_Ali.dat / Voz_Ali.hea (Fs=48000 Hz)
-Guardado Voz_Karen.dat / Voz_Karen.hea (Fs=48000 Hz)
-Guardado Voz_Kevin.dat / Voz_Kevin.hea (Fs=48000 Hz)
-Guardado Voz_Mafe.dat / Voz_Mafe.hea (Fs=48000 Hz)
-Guardado Voz_Mateus.dat / Voz_Mateus.hea (Fs=48000 Hz)
-Guardado Voz_Raul.dat / Voz_Raul.hea (Fs=48000 Hz)
++ Guardado Voz_Ali.dat / Voz_Ali.hea (Fs=48000 Hz)
++ Guardado Voz_Karen.dat / Voz_Karen.hea (Fs=48000 Hz)
++ Guardado Voz_Kevin.dat / Voz_Kevin.hea (Fs=48000 Hz)
++ Guardado Voz_Mafe.dat / Voz_Mafe.hea (Fs=48000 Hz)
++ Guardado Voz_Mateus.dat / Voz_Mateus.hea (Fs=48000 Hz)
++ Guardado Voz_Raul.dat / Voz_Raul.hea (Fs=48000 Hz)
 
 ### Gráficas de las señales de voz en el dominio del tiempo
 ```python
