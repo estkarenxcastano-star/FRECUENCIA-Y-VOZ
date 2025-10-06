@@ -419,6 +419,7 @@ print("Guardado: parteB_jitter.csv")
 | 4 | Voz_Mateus  |  48000  |           108.35 |    136 |        0.002508 |         24.62 |
 | 5 | Voz_Raul    |  48000  |           103.67 |    130 |        0.008541 |         52.77 |
 
+
 ### CALCULO DE SHIMMER
 ```python
 import numpy as np, pandas as pd
