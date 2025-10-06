@@ -350,6 +350,66 @@ for rec_name, _ in record_names:
 + **Voz Raúl: sexo=hombre, Fs=48000 Hz → filtro 80-400 Hz (orden 4)**
 <img width="888" height="348" alt="image" src="https://github.com/user-attachments/assets/316232ed-86d4-4a37-983b-ef516f6c5171" />
 
+### CALCULO DE JITTER
+```python
+import numpy as np, pandas as pd
+from scipy.signal import find_peaks
+
+EPS = 1e-12  # evita dividir por cero
+
+# Estimación sencilla de F0 por autocorrelación (para fijar distancia entre picos)
+def f0_autocorr(y, sr, fmin=50, fmax=500):
+    y = y - np.mean(y)                                       # quita componente DC
+    ac = np.correlate(y, y, mode='full')[len(y)-1:]          # autocorrelación positiva
+    ac = ac / (ac[0] + EPS)                                  # normaliza
+    kmin, kmax = int(sr/fmax), int(sr/fmin)                  # lags permitidos
+    if kmax <= kmin or kmax >= len(ac): return np.nan
+    k = kmin + np.argmax(ac[kmin:kmax+1])                    # mejor pico en el rango
+    return sr/k if ac[k] > 0.2 else np.nan                   # F0 si el pico es “decente”
+
+rows = []
+for name, data in filtered_signals.items():                  # recorre cada voz filtrada
+    y, sr = data["y"], data["sr"]                            # señal y su Fs
+
+    f0 = f0_autocorr(y, sr)                                  # F0 ~ guía para distancia
+    f0_safe = 200.0 if np.isnan(f0) else f0                  # valor por defecto si falla
+    min_dist = int(0.6 * sr / f0_safe)                       # separación mínima entre picos
+    height = 0.1*np.max(np.abs(y)) + EPS                     # descarta picos pequeños (ruido)
+
+    peaks, _ = find_peaks(y, distance=max(1,min_dist), height=height)  # picos (ciclos)
+    Ti = np.diff(peaks) / sr                                 # periodos entre picos (s)
+
+    if len(Ti) >= 2:                                         # se necesitan ≥2 periodos
+        jitter_abs = np.mean(np.abs(np.diff(Ti)))            # |Ti - Ti+1| promedio (s)
+        jitter_pct = 100.0 * jitter_abs / (np.mean(Ti) + EPS) # relativo %
+    else:
+        jitter_abs, jitter_pct = np.nan, np.nan              # no hay ciclos suficientes
+
+    rows.append({
+        "archivo": name,
+        "Fs_Hz": sr,
+        "F0_est_Hz": None if np.isnan(f0) else round(f0,2),
+        "ciclos": len(peaks),
+        "Jitter_abs_s": None if np.isnan(jitter_abs) else round(jitter_abs,6),
+        "Jitter_rel_%": None if np.isnan(jitter_pct) else round(jitter_pct,2),
+    })
+
+df_jitter = pd.DataFrame(rows)
+from IPython.display import display
+display(df_jitter)
+df_jitter.to_csv("parteB_jitter.csv", index=False)
+print("Guardado: parteB_jitter.csv")
+```
+### RESULTADOS
+
+|archivo|	|Fs_Hz|	|F0_est_Hz|	|ciclos|	|Jitter_abs_s|	|Jitter_rel_%|
+|0	Voz_Ali|	|48000|	|120.60|	|267|	|0.004115|	|40.75|
+|1	Voz_Karen|	|48000|	|213.33|	|423|	|0.001990|	|34.84|
+|2	Voz_Kevin|	|48000|	|122.76|	|152|	|0.003257|	|32.50|
+|3	Voz_Mafe|	|48000|	|217.19|	|319|	|0.004531|	|57.59|
+|4	Voz_Mateus|	|48000|	|108.35|	|136|	|0.002508|	|24.62|
+|5	Voz_Raul|	|48000|	|103.67|	|130|	|0.008541|	|52.77|
+
 
 
 
