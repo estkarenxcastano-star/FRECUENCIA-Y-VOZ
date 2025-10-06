@@ -400,6 +400,7 @@ display(df_jitter)
 df_jitter.to_csv("parteB_jitter.csv", index=False)
 print("Guardado: parteB_jitter.csv")
 ```
+
 ### RESULTADOS
 
 |archivo|	|Fs_Hz|	|F0_est_Hz|	|ciclos|	|Jitter_abs_s|	|Jitter_rel_%|
