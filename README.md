@@ -541,7 +541,14 @@ display(resumen)
 | Hombre | 111.32        | 10.52      | 2551.17                     | 264.43                   | 0.03                          | 0.02                        | -18.16          | 2.17         | 36.63                 | 14.52             | 20.80                  | 1.72               |
 | Mujer  | 186.38        | 58.38      | 2966.02                     | 714.45                   | 0.04                          | 0.01                        | -15.26          | 0.58         | 44.39                 | 11.80             | 18.46                  | 5.31               |
 
++ **¿Qué diferencias se observan en la frecuencia fundamental?**
+En nuestros datos, la F0 media de las voces femeninas fue de 186.38 Hz y la de las voces masculinas fue de 111.32 Hz. Como se espera por la anatomía laríngea, las cuerdas vocales más cortas y tensas en mujeres, la F0 femenina resulta más alta que la masculina.
 
++ **¿Qué otras diferencias notan en términos de brillo, media o intensidad?**
+**FRECUENCIA MEDIA:** La media de Frecuencia_media fue de 2966.02 Hz en mujeres y 2551.17 Hz en hombres.
+En nuestro caso fue mayor en mujeres, siendo coherente con la frecuencia fundamental, esto se debe tanto a la anatomía como a concentraciones más altas de energía en frecuencias más altas.
+**BRILLO:** Tuvimos como resultado una media de brillo de 0.04 Hz en mujeres y de 0.03 Hz en hombres, observando mayor brillo en mujeres.
+**INTENSIDAD:** La intensidad fue de -15.26 dBFS en mujeres y de -18.16 dBFS en hombres, esto depende de la distancia del micrófono y las condiciones de grabación.
 
 
 
