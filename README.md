@@ -260,6 +260,8 @@ display(df_punto5)
 df_punto5.to_csv("punto5_resultados.csv", index=False)
 print("Guardado: punto5_resultados.csv")
 ```
+### RESULTADOS
+
 <img width="703" height="199" alt="image" src="https://github.com/user-attachments/assets/63553cc9-5ddb-48e6-b3d1-e964fb4460a2" />
 
 
