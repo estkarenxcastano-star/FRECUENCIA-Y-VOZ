@@ -264,6 +264,98 @@ print("Guardado: punto5_resultados.csv")
 
 <img width="703" height="199" alt="image" src="https://github.com/user-attachments/assets/63553cc9-5ddb-48e6-b3d1-e964fb4460a2" />
 
+# PARTE B - MEDICIÓN DE JITTER Y SHIMMER
+
++ **FILTRO PASA-BANDA**
+```python
+# ================== PARTE B · Paso 1: Filtro pasa-banda (con tu mapeo) ==================
+import wfdb, numpy as np, matplotlib.pyplot as plt
+from scipy.signal import butter, filtfilt
+
+# --- 1) Leer WFDB y devolver señal en float + Fs ---
+def read_wfdb_float(rec_name):
+    rec = wfdb.rdrecord(rec_name)                      # abre <rec>.hea/.dat
+    if rec.p_signal is not None:                       # señal en unidades físicas
+        return rec.p_signal[:, 0].astype(np.float32), rec.fs
+    # si no existe p_signal, usamos d_signal y la convertimos con la cabecera
+    rec = wfdb.rdrecord(rec_name, physical=False)
+    y = rec.d_signal[:, 0].astype(np.float32)
+    gain = float(rec.adc_gain[0]) if rec.adc_gain is not None else 32767.0
+    base = float(rec.baseline[0]) if rec.baseline is not None else 0.0
+    return (y - base) / gain, rec.fs
+
+# --- 2) Filtro pasa-banda Butterworth (orden 4) con fase cero ---
+def bandpass(y, sr, f1, f2, order=4):
+    nyq = 0.5 * sr
+    b, a = butter(order, [f1/nyq, f2/nyq], btype="bandpass")
+    return filtfilt(b, a, y)   # filtra ida/vuelta → sin desfase
+
+# --- 3) Tu mapeo de sexo por archivo (usamos claves en minúscula por seguridad) ---
+sexo_map = {
+    "voz_ali":   "mujer",
+    "voz_karen": "mujer",
+    "voz_mafe":  "mujer",
+    "voz_kevin": "hombre",
+    "voz_mateus":"hombre",
+    "voz_raul":  "hombre",
+}
+
+# --- 4) Helper para graficar antes vs después ---
+def plot_time_before_after(y, y_filt, sr, title):
+    t = np.arange(len(y)) / sr
+    plt.figure(figsize=(10,4))
+    plt.plot(t, y, label="Original", alpha=0.6)
+    plt.plot(t, y_filt, label="Filtrada", linewidth=1)
+    plt.xlabel("Tiempo [s]"); plt.ylabel("Amplitud")
+    plt.title(title); plt.legend(); plt.tight_layout(); plt.show()
+
+# --- 5) Aplicamos el filtro a todos y guardamos para el paso de jitter ---
+filtered_signals = {}  # aquí guardamos para reutilizar en la siguiente celda
+
+for rec_name, _ in record_names:
+    y, sr = read_wfdb_float(rec_name)
+
+    # sexo por tu mapeo (insensible a mayúsculas/minúsculas)
+    sexo = sexo_map.get(rec_name.lower(), None)
+    if sexo is None:
+        raise ValueError(
+            f"'{rec_name}'. "
+        )
+
+    # bandas exigidas por la guía
+    f1, f2 = (80, 400) if sexo == "hombre" else (150, 500)
+    y_filt = bandpass(y, sr, f1, f2, order=4)
+
+    print(f"{rec_name}: sexo={sexo}, Fs={sr} Hz → filtro {f1}-{f2} Hz (orden 4)")
+    plot_time_before_after(y, y_filt, sr, f"{rec_name} — Antes/Después del filtro")
+
+    # guardamos para el paso de jitter/shimmer
+    filtered_signals[rec_name] = {"y": y_filt.astype(np.float32), "sr": sr, "sexo": sexo}
+```
++ **Voz Alissia: sexo=mujer, Fs=48000 Hz → filtro 150-500 Hz (orden 4)**
+<img width="888" height="347" alt="image" src="https://github.com/user-attachments/assets/3b06d383-a12b-48d3-87e2-fb321ee662fe" />
+
++ **Voz Karen: sexo=mujer, Fs=48000 Hz → filtro 150-500 Hz (orden 4)**
+<img width="887" height="346" alt="image" src="https://github.com/user-attachments/assets/0ceb8bf5-2615-424d-9bc5-558d43fb3dc5" />
+
++ **Voz Mafe: sexo=mujer, Fs=48000 Hz → filtro 150-500 Hz (orden 4)**
+<img width="889" height="348" alt="image" src="https://github.com/user-attachments/assets/0174df8a-377d-4eb3-a88d-8be077c83d82" />
+
++ **Voz Kevin: sexo=hombre, Fs=48000 Hz → filtro 80-400 Hz (orden 4)**
+<img width="889" height="350" alt="image" src="https://github.com/user-attachments/assets/0a79b440-6c43-4dac-8b83-d1ade7b36c14" />
+
++ **Voz Mateus: sexo=hombre, Fs=48000 Hz → filtro 80-400 Hz (orden 4)**
+<img width="887" height="350" alt="image" src="https://github.com/user-attachments/assets/5e076bbb-483f-49c9-8d92-81bb85e0a6d2" />
+
++ **Voz Raúl: sexo=hombre, Fs=48000 Hz → filtro 80-400 Hz (orden 4)**
+<img width="888" height="348" alt="image" src="https://github.com/user-attachments/assets/316232ed-86d4-4a37-983b-ef516f6c5171" />
+
+
+
+
+
+
+
 
 
 
