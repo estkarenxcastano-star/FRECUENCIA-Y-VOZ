@@ -186,6 +186,84 @@ for rec_name, _ in record_names:
 + **Voz Raúl**
 <img width="892" height="258" alt="image" src="https://github.com/user-attachments/assets/594cdb35-8d6b-4419-a18e-fb9493996c99" />
 
+### Obtenemos las siguientes características de cada señal
+a. Frecuencia fundamental. 
+b. Frecuencia media. 
+c. Brillo. 
+d. Intensidad (energía). 
+
+```python
+#  Define una constante muy pequeña llamada EPS
+EPS = 1e-12
+
+# 1) Leer señal WFDB como float + Fs
+def read_wfdb_float(rec_name):
+    rec = wfdb.rdrecord(rec_name)
+    if rec.p_signal is not None:
+        return rec.p_signal[:,0].astype(np.float32), rec.fs
+    rec = wfdb.rdrecord(rec_name, physical=False)
+    y = rec.d_signal[:,0].astype(np.float32)
+    gain = float(rec.adc_gain[0]) if rec.adc_gain is not None else 32767.0
+    base = float(rec.baseline[0]) if rec.baseline is not None else 0.0
+    return (y - base) / gain, rec.fs
+
+# 2) F0 por autocorrelación (simple)
+def f0_autocorr(y, sr, fmin=50, fmax=500):
+    y = y - np.mean(y)
+    ac = np.correlate(y, y, mode='full')[len(y)-1:]
+    ac = ac / (ac[0] + EPS)
+    lag_min = int(sr / fmax); lag_max = int(sr / fmin)
+    if lag_max <= lag_min or lag_max >= len(ac):
+        return np.nan
+    k = lag_min + np.argmax(ac[lag_min:lag_max+1])
+    return sr / k if ac[k] > 0.2 else np.nan
+
+# 3) Frecuencia_media y brillo (>1500 Hz)
+def FM_y_brillo(y, sr, cutoff=1500):
+    N = len(y)
+    y = y - np.mean(y)
+    Y = np.fft.rfft(y * np.hanning(N))
+    f = np.fft.rfftfreq(N, d=1/sr)
+    mag = np.abs(Y); pow_spec = mag**2
+    FM = np.sum(f * mag) / (np.sum(mag) + EPS)
+    brillo = np.sum(pow_spec[f >= cutoff]) / (np.sum(pow_spec) + EPS)
+    return float(FM), float(brillo)
+
+# 4) Intensidad (RMS y dBFS)
+def rms_y_dbfs(y):
+    rms = float(np.sqrt(np.mean(y**2)))
+    dbfs = float(20 * np.log10(rms + EPS))
+    return rms, dbfs
+
+# 5) Recorre tus registros ya existentes
+import pandas as pd
+rows = []
+for rec_name, _ in record_names:   # record_names ya debe existir
+    y, sr = read_wfdb_float(rec_name)
+    F0 = f0_autocorr(y, sr)
+    C, B = FM_y_brillo(y, sr)
+    RMS, DB = rms_y_dbfs(y)
+    rows.append({
+        "archivo": rec_name,
+        "Fs_Hz": sr,
+        "dur_s": round(len(y)/sr, 3),
+        "F0_Hz": None if np.isnan(F0) else round(F0, 2),
+        "Frecuencia_media_Hz": round(C, 2),
+        "brillo_ratio(>1500Hz)": round(B, 4),
+        "RMS": round(RMS, 6),
+        "RMS_dBFS": round(DB, 2),
+    })
+
+df_punto5 = pd.DataFrame(rows)
+from IPython.display import display
+display(df_punto5)
+df_punto5.to_csv("punto5_resultados.csv", index=False)
+print("Guardado: punto5_resultados.csv")
+```
+<img width="703" height="199" alt="image" src="https://github.com/user-attachments/assets/63553cc9-5ddb-48e6-b3d1-e964fb4460a2" />
+
+
+
 
 
 
