@@ -3,10 +3,10 @@
 ### Objetivo
 Capturar y procesar señales de voz masculinas y femeninas para analizar su comportamiento espectral mediante la Transformada de Fourier, extrayendo parámetros característicos como frecuencia fundamental, frecuencia media, brillo, intensidad, jitter y shimmer, con el fin de comparar y concluir las diferencias principales entre ambos géneros.
 
-#PARTE A-ADQUISICIÓN DE LAS SEÑALES DE VOZ
+# PARTE A-ADQUISICIÓN DE LAS SEÑALES DE VOZ
 
 
-##LIBRERIAS
+## LIBRERIAS
 Las librerias que implementamos fueron las siguientes:
 
 +**Importación de liberías**
