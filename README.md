@@ -187,10 +187,10 @@ for rec_name, _ in record_names:
 <img width="892" height="258" alt="image" src="https://github.com/user-attachments/assets/594cdb35-8d6b-4419-a18e-fb9493996c99" />
 
 ### Obtenemos las siguientes características de cada señal
-a. Frecuencia fundamental. 
-b. Frecuencia media. 
-c. Brillo. 
-d. Intensidad (energía). 
++ Frecuencia fundamental. 
++ Frecuencia media. 
++ Brillo. 
++ Intensidad (energía). 
 
 ```python
 #  Define una constante muy pequeña llamada EPS
