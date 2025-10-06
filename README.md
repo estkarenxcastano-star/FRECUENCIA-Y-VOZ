@@ -1,4 +1,4 @@
-# LABORATORIO 3 
+# LABORATORIO 3
 ## FRECUENCIA Y VOZ
 ### Objetivo
 Capturar y procesar señales de voz masculinas y femeninas para analizar su comportamiento espectral mediante la Transformada de Fourier, extrayendo parámetros característicos como frecuencia fundamental, frecuencia media, brillo, intensidad, jitter y shimmer, con el fin de comparar y concluir las diferencias principales entre ambos géneros.
