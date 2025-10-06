@@ -481,6 +481,67 @@ print("Guardado: parteB_shimmer.csv")
 | 4 | Voz_Mateus | 48000   | 136                | 0.047803    | 19.97           |
 | 5 | Voz_Raul   | 48000   | 130                | 0.041034    | 22.78           |
 
+# PARTE C - COMPARACIÓN Y CONCLUSIONES
+
++ Comparar los resultados obtenidos entre las voces masculinas y femeninas.
+```python
+import pandas as pd, os
+
+# 1) Cargar resultados ya guardados
+dfA = pd.read_csv("punto5_resultados.csv")      # F0, Frecuencia_media, brillo, RMS/dBFS
+dfJ = pd.read_csv("parteB_jitter.csv")          # Jitter_rel_%
+dfS = pd.read_csv("parteB_shimmer.csv")         # Shimmer_rel_%
+
+# 2) Nos quedarmos solo con columnas clave de jitter/shimmer y unir por 'archivo'
+df = (
+    dfA
+    .merge(dfJ[["archivo","Jitter_rel_%"]], on="archivo", how="left")
+    .merge(dfS[["archivo","Shimmer_rel_%"]], on="archivo", how="left")
+)
+
+# 3) Agregamos la etiqueta de sexo (nuestros mapeo)
+sexo_map = {
+    "voz_ali":   "mujer",
+    "voz_karen": "mujer",
+    "voz_mafe":  "mujer",
+    "voz_kevin": "hombre",
+    "voz_mateus":"hombre",
+    "voz_raul":  "hombre",
+}
+df["sexo"] = df["archivo"].str.lower().map(sexo_map)
+
+# 4) Tabla final por voz
+cols = [
+    "archivo","sexo","Fs_Hz","dur_s","F0_Hz","Frecuencia_media_Hz",
+    "brillo_ratio(>1500Hz)","RMS_dBFS","Jitter_rel_%","Shimmer_rel_%"
+]
+df_final = df[cols].sort_values(["sexo","archivo"]).reset_index(drop=True)
+display(df_final)
+
+# 5) Resumen por género (promedio y desviación estándar)
+metrics = ["F0_Hz","Frecuencia_media_Hz","brillo_ratio(>1500Hz)","RMS_dBFS","Jitter_rel_%","Shimmer_rel_%"]
+resumen = df_final.groupby("sexo")[metrics].agg(["mean","std"]).round(2)
+# aplanar nombres de columnas para que sea legible
+resumen.columns = [f"{m}_{s}" for m,s in resumen.columns]
+display(resumen)
+```
+### RESULTADOS
+| # | Archivo     | Sexo   | Fs (Hz) | Duración (s) | F0 (Hz) | Frecuencia media (Hz) | Brillo ratio (>1500 Hz) | RMS (dBFS) | Jitter rel (%) | Shimmer rel (%) |
+|---|-------------|--------|---------|--------------|--------|-------------------------|--------------------------|------------|----------------|-----------------|
+| 0 | Voz_Kevin   | Hombre | 48000   | 2.517        | 123.08 | 2755.85                 | 0.0183                   | -15.85     | 32.50          | 19.66           |
+| 1 | Voz_Mateus  | Hombre | 48000   | 2.603        | 108.11 | 2252.61                 | 0.0280                   | -18.47     | 24.62          | 19.97           |
+| 2 | Voz_Raul    | Hombre | 48000   | 2.859        | 102.78 | 2645.04                 | 0.0586                   | -20.16     | 52.77          | 22.78           |
+| 3 | Voz_Ali     | Mujer  | 48000   | 3.200        | 119.40 | 3775.99                 | 0.0347                   | -15.02     | 40.75          | 24.56           |
+| 4 | Voz_Karen   | Mujer  | 48000   | 3.157        | 213.33 | 2696.68                 | 0.0391                   | -14.84     | 34.84          | 15.88           |
+| 5 | Voz_Mafe    | Mujer  | 48000   | 2.560        | 226.42 | 2425.39                 | 0.0487                   | -15.93     | 57.59          | 14.93           |
+
+
+| Sexo   | F0 (Hz) media | F0 (Hz) std | Frecuencia media (Hz) media | Frecuencia media (Hz) std | Brillo ratio (>1500 Hz) media | Brillo ratio (>1500 Hz) std | RMS (dBFS) media | RMS (dBFS) std | Jitter rel (%) media | Jitter rel (%) std | Shimmer rel (%) media | Shimmer rel (%) std |
+|--------|---------------|------------|-----------------------------|---------------------------|-------------------------------|-----------------------------|------------------|---------------|-----------------------|--------------------|------------------------|---------------------|
+| Hombre | 111.32        | 10.52      | 2551.17                     | 264.43                   | 0.03                          | 0.02                        | -18.16          | 2.17         | 36.63                 | 14.52             | 20.80                  | 1.72               |
+| Mujer  | 186.38        | 58.38      | 2966.02                     | 714.45                   | 0.04                          | 0.01                        | -15.26          | 0.58         | 44.39                 | 11.80             | 18.46                  | 5.31               |
+
+
 
 
 
