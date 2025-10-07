@@ -487,6 +487,9 @@ print("Guardado: parteB_shimmer.csv")
 
 # PARTE C - COMPARACIÓN Y CONCLUSIONES
 
+<img width="519" height="1280" alt="image" src="https://github.com/user-attachments/assets/678a7562-d539-4db7-990b-07cad902fe4b" />
+
+
 + Comparar los resultados obtenidos entre las voces masculinas y femeninas.
 ```python
 import pandas as pd, os
