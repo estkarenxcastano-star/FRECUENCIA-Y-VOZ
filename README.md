@@ -555,14 +555,20 @@ En nuestro caso fue mayor en mujeres, siendo coherente con la frecuencia fundame
 + **INTENSIDAD:** La intensidad fue de -15.26 dBFS en mujeres y de -18.16 dBFS en hombres, esto depende de la distancia del micrófono y las condiciones de grabación.
 
 + **Redactar conclusiones sobre el comportamiento de la voz en hombres y mujeres a partir de los análisis realizados.**
+
 A partir del análisis espectral y temporal de las señales de voz masculinas y femeninas, fue posible identificar diferencias claras en sus características acústicas fundamentales. Las voces femeninas presentaron valores promedio de frecuencia fundamental (F0) evidentemente más altas (186.38 Hz) que las masculinas (111.32 Hz), esto tiene sentido teniendo en cuenta las diferencias fisiológicas en las cuerdas vocales, que en mujeres son más cortas y vibran a mayores frecuencias. De igual forma, la frecuencia media del espectro y el brillo fueron mayores en las voces femeninas, indicando una mayor concentración de energía en componentes de alta frecuencia y una percepción auditiva más clara o aguda.
+
 Analizando la intensidad promedio (RMS), las voces femeninas son ligeramente más altas (-15.26 dBFS) en comparación a las masculinas (-18.16 dBFS), lo cual se relaciona con diferencias en la proyección vocal durante la grabación.
 Por otro lado, el análisis de jitter y shimmer permitió evaluar la estabilidad ciclo a ciclo de la señal vocal. Se obtuvieron valores elevados de jitter (24 %–58 %) y shimmer (14 %–24 %) en ambos géneros, superiores a los rangos típicos de fonaciones sostenidas controladas. Esto se debe a que las señales analizadas corresponden a habla natural, donde existen variaciones de pronunciación y de entonación propias del lenguaje espontáneo.
+
 En conjunto, se concluye que las voces femeninas se caracterizan por frecuencias fundamentales y medias más altas, mayor brillo espectral y ligeramente mayor variabilidad en frecuencia (jitter), mientras que las voces masculinas presentan frecuencias más bajas, menor intensidad promedio y valores de shimmer similares.
 
 + **Discuta la importancia clínica del jitter y shimmer en el análisis de la voz**
+
 Los parámetros jitter y shimmer son herramientas fundamentales en el análisis acústico clínico de la voz, ya que permiten cuantificar la estabilidad temporal y de amplitud de la fonación, aspectos que se ven directamente afectados en diversas alteraciones laríngeas y neuromusculares.
+
 El jitter evalúa la variabilidad ciclo a ciclo de la frecuencia fundamental, reflejando la regularidad de la vibración de las cuerdas vocales. Un aumento significativo de este parámetro puede indicar alteraciones en la coordinación neuromuscular laríngea, presencia de nódulos, pólipos, parálisis cordales, disfonías funcionales o neurológicas. Por su parte, el shimmer mide la variación en la amplitud de cada ciclo glótico, siendo un indicador sensible de cambios en la energía de vibración y del cierre glótico. Valores elevados pueden estar asociados a irregularidades estructurales de las cuerdas vocales, falta de cierre completo, lesiones benignas o procesos inflamatorios.
+
 Desde un punto de vista clínico, estos parámetros son de gran utilidad porque permiten una evaluación objetiva y no invasiva de la función vocal, complementando la valoración perceptiva del especialista. Además, pueden emplearse para detectar alteraciones en etapas tempranas, realizar seguimiento de la evolución clínica y evaluar la efectividad de intervenciones terapéuticas o quirúrgicas.
 
 
